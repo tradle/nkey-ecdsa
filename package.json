@@ -1,0 +1,24 @@
+{
+  "name": "nkey-ecdsa",
+  "version": "1.0.0",
+  "description": "nkey ecdsa implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "keywords": [],
+  "author": "Mark Vayngrib <mark@tradle.io> (http://github.com/mvayngrib)",
+  "license": "MIT",
+  "dependencies": {
+    "key-encoder": "github:mvayngrib/key-encoder-js",
+    "nkey": "^2.0.2",
+    "nkey-secp256k1": "^1.1.1",
+    "xtend": "^4.0.1"
+  },
+  "devDependencies": {
+    "tape": "^4.6.0"
+  },
+  "engines": {
+    "node": ">=5.0.0"
+  }
+}
