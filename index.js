@@ -142,7 +142,7 @@ function fromJSON (opts) {
       fingerprint
     }
 
-    if (exportPrivateKey) obj.priv = key.getPrivate('hex')
+    if (exportPrivateKey) obj.priv = priv.toString('hex')
 
     return obj
   }
