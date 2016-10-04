@@ -50,6 +50,9 @@ module.exports = exports = nkey.wrapAPI({
 
 exports.DEFAULT_ALGORITHM = 'sha256'
 exports.DEFAULT_CURVE = 'secp256k1'
+exports.setImplementationForCurve = function (curve, impl) {
+  special[curve] = impl
+}
 
 function normalizeOpts (opts) {
   opts = opts || {}
