@@ -4,21 +4,33 @@
   "description": "nkey ecdsa implementation",
   "main": "index.js",
   "scripts": {
-    "test": "node test"
+    "test": "node test",
+    "lint": "eslint --quiet --ignore-path .gitignore .",
+    "browser": "zuul --no-coverage --local 8080 -- test.js"
   },
   "keywords": [],
   "author": "Mark Vayngrib <mark@tradle.io> (http://github.com/mvayngrib)",
   "license": "MIT",
   "dependencies": {
+    "asn1.js": "^4.9.1",
+    "bluebird": "^3.5.0",
+    "bn.js": "^4.4",
     "key-encoder": "github:mvayngrib/key-encoder-js",
     "nkey": "^2.0.2",
     "nkey-secp256k1": "^1.1.1",
+    "object.omit": "^2.0.1",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "tape": "^4.6.0"
+    "babel-preset-es2015": "^6.24.0",
+    "babelify": "^7.3.0",
+    "eslint": "^3.19.0",
+    "tape": "^4.6.0",
+    "typeforce": "^1.10.6",
+    "zuul": "3.11.1"
   },
   "engines": {
     "node": ">=5.0.0"
-  }
+  },
+  "browser": "./browser.js"
 }
