@@ -151,7 +151,7 @@ function getPropsForJSON (json) {
 }
 
 function fromJSON (json) {
-  const ops = json.priv ? ['sign', 'verify'] : ['verify']
+  const ops = json.priv ? ['sign'] : ['verify']
   const jwk = toJWK(json)
   const ecOpts = getCurveSpec(json.curve)
   const check = checkNative('ECDSA', ecOpts.hash.name, ecOpts.namedCurve)

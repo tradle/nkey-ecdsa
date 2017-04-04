@@ -90,6 +90,26 @@ test(`sign (ecdsa)`, function (t) {
   })
 })
 
+test(`gen + export + import + sign (ecdsa)`, function (t) {
+  t.plan(1)
+  impl.gen({}, function (err, result) {
+    if (err) throw err
+
+    const priv = impl.fromJSON(result.toJSON(true))
+    const data = sha256('blah')
+    priv.sign(data, function (err, sig) {
+      if (err) throw err
+
+      const pub = impl.fromJSON(priv.toJSON())
+      pub.verify(data, sig, function (err, verified) {
+        if (err) throw err
+
+        t.ok(verified)
+      })
+    })
+  })
+})
+
 if (process.browser) {
   test('cross-verify against default implementation', function (t) {
     t.plan(1)
