@@ -2,10 +2,10 @@
 const subtle = window.crypto.subtle
 const omit = require('object.omit')
 const extend = require('xtend/mutable')
-const Promise = require('bluebird')
 const debug = require('debug')('nkey-ecdsa:browser')
 const nkey = require('nkey')
-const co = Promise.coroutine
+const Promise = require('any-promise')
+const co = require('co')
 const type = 'ec'
 const {
   toJWK,
@@ -28,7 +28,7 @@ const KEY_PROPS = [
   'isPrivateKey'
 ]
 
-const gen = co(function* (opts, cb) {
+const gen = co.wrap(function* (opts, cb) {
   let key
   try {
     const ecOpts = getCurveSpec(opts.curve || exports.DEFAULT_CURVE)
@@ -68,7 +68,7 @@ function fromCryptoKey ({ key, json }) {
   const { curve } = json
   const ecOpts = getCurveSpec(curve)
   const api = getPropsForJSON(json)
-  api.sign = co(function* (data, algorithm, cb) {
+  api.sign = co.wrap(function* (data, algorithm, cb) {
     if (typeof algorithm === 'function') {
       cb = algorithm
     } else if (normalizeAlgorithm(algorithm) !== exports.DEFAULT_ALGORITHM) {
@@ -86,7 +86,7 @@ function fromCryptoKey ({ key, json }) {
     cb(null, der)
   })
 
-  api.verify = co(function* (data, algorithm, sig, cb) {
+  api.verify = co.wrap(function* (data, algorithm, sig, cb) {
     if (typeof sig === 'function') {
       cb = sig
       sig = algorithm
@@ -157,7 +157,7 @@ function fromJSON (json) {
   const check = checkNative('ECDSA', ecOpts.hash.name, ecOpts.namedCurve)
 
   let supported
-  const api = co(function* () {
+  const api = co.wrap(function* () {
     supported = yield check
     if (supported) {
       return subtle.importKey('jwk', jwk, ecOpts, EXTRACTABLE, ops)
@@ -170,7 +170,7 @@ function fromJSON (json) {
   extend(api, syncProps)
 
   let loadedKey
-  co(function* () {
+  co.wrap(function* () {
     const someKey = yield api
     if (!supported) {
       return loadedKey = someKey
@@ -194,7 +194,7 @@ function fromJSON (json) {
   })
 
   ;['sign', 'verify'].forEach(method => {
-    api[method] = co(function* () {
+    api[method] = co.wrap(function* () {
       // wait for reimport
       yield api
       return loadedKey[method].apply(loadedKey, arguments)
@@ -214,7 +214,7 @@ function pad (buf, length) {
 }
 
 // https://github.com/calvinmetcalf/native-crypto/blob/master/lib/signature.js
-const checkNative = co(function* (type, algo, curve) {
+const checkNative = co.wrap(function* (type, algo, curve) {
   if (global.process && !global.process.browser) {
     return false
   }
@@ -262,7 +262,7 @@ const checkNative = co(function* (type, algo, curve) {
   return works
 })
 
-const testSign = co(function* ({ opts, signOpts }) {
+const testSign = co.wrap(function* ({ opts, signOpts }) {
   try {
     const key = yield subtle.generateKey(opts, false, ['sign'])
     yield subtle.sign(signOpts, key.privateKey, ZERO_BUF)

@@ -12,9 +12,10 @@
   "author": "Mark Vayngrib <mark@tradle.io> (http://github.com/mvayngrib)",
   "license": "MIT",
   "dependencies": {
+    "any-promise": "^1.3.0",
     "asn1.js": "^4.9.1",
-    "bluebird": "^3.5.0",
     "bn.js": "^4.4",
+    "co": "^4.6.0",
     "key-encoder": "github:mvayngrib/key-encoder-js",
     "nkey": "^2.0.2",
     "nkey-secp256k1": "^1.1.1",
