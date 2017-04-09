@@ -29,9 +29,14 @@ const KEY_PROPS = [
 ]
 
 const gen = co.wrap(function* (opts, cb) {
+  const ecOpts = getCurveSpec(opts.curve || exports.DEFAULT_CURVE)
+  const supported = yield checkNative('ECDSA', ecOpts.hash.name, ecOpts.namedCurve)
+  if (!supported) {
+    return require('./default').gen(opts, cb)
+  }
+
   let key
   try {
-    const ecOpts = getCurveSpec(opts.curve || exports.DEFAULT_CURVE)
     const raw = yield subtle.generateKey(ecOpts, EXTRACTABLE, ['sign', 'verify'])
     const privJWK = yield subtle.exportKey('jwk', raw.privateKey)
     const imported = fromJWK(privJWK)
@@ -151,8 +156,6 @@ function getPropsForJSON (json) {
 }
 
 function fromJSON (json) {
-  const ops = json.priv ? ['sign'] : ['verify']
-  const jwk = toJWK(json)
   const ecOpts = getCurveSpec(json.curve)
   const check = checkNative('ECDSA', ecOpts.hash.name, ecOpts.namedCurve)
 
@@ -160,6 +163,8 @@ function fromJSON (json) {
   const api = co.wrap(function* () {
     supported = yield check
     if (supported) {
+      const ops = json.priv ? ['sign'] : ['verify']
+      const jwk = toJWK(json)
       return subtle.importKey('jwk', jwk, ecOpts, EXTRACTABLE, ops)
     } else {
       return require('./default').fromJSON(json)
